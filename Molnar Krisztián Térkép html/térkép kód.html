@@ -3,13 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="térkép.css">
+    <title>Map Example with Hover Borders</title>
+    <style>
+        /* A kép és az overlay container */
+        .map-container {
+            position: relative;
+            width: 561px;
+            height: 753px;
+        }
+
+        /* Az overlay div, amely körüli határt rajzol */
+        .area-border {
+            position: absolute;
+            border: 2px solid red; /* Border szín és vastagság */
+            pointer-events: none; /* Nem zavarja a kattintásokat */
+            display: none; /* Alapból rejtve van */
+        }
+
+        /* A div, amely akkor látszik, amikor az egér az area fölött van */
+        .show-border {
+            display: block; /* Megjelenítés */
+        }
+    </style>
 </head>
 <body>
-    <img src="kep/Kép (2).png" alt="Workplace" usemap="#workmap" width="561" height="753">
+    <div class="map-container">
+        <!-- Kép, amelyre a map vonatkozik -->
+        <img src="kep/Kép (2).png" alt="Workplace" usemap="#workmap" width="561" height="753">
 
+        <!-- Az overlay div-ek, amelyek a határokat jelenítik meg -->
+        <div class="area-border" id="area1" style="top: 36px; left: 168px; width: 198px; height: 51px;"></div>
+        <div class="area-border" id="area2" style="top: 203px; left: 174px; width: 99px; height: 19px;"></div>
+    </div>
+
+    <!-- A map és area elemek -->
     <map name="workmap">
-    <area shape="rect" coords="168,36,366,87" alt="Computer" href="teszt.html">
-    <area shape="rect" coords="174,203,273,222" alt="Computer" href="teszt.html">
+        <area shape="rect" coords="168,36,366,87" title="Tető" href="teszt.html" onmouseover="showBorder('area1')" onmouseout="hideBorder('area1')">
+        <area shape="rect" coords="174,203,273,222" title="AUTOK" href="teszt.html" onmouseover="showBorder('area2')" onmouseout="hideBorder('area2')">
     </map>
+
+    <div class="info">
+        <p>36363696 + 969</p>
+    </div>
+
+    <script>
+        // Show the border when hovering over the area
+        function showBorder(areaId) {
+            document.getElementById(areaId).classList.add('show-border');
+        }
+
+        // Hide the border when the mouse leaves the area
+        function hideBorder(areaId) {
+            document.getElementById(areaId).classList.remove('show-border');
+        }
+    </script>
 </body>
 </html>
+

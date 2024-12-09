@@ -1,0 +1,7 @@
+area:hover {
+    border: 5px solid red;
+}
+
+#a1:hover {
+    border-color: black;
+}
