@@ -3,9 +3,19 @@ body {
     background-repeat: no-repeat;
     background-size: 80%;
     width: 80%;
+    padding: 50px;
 }
 
-.egyes{
+#egyes{
     background-color: #b2b9c6;
-    border-radius: ;
+    border-radius: 5px;
+    width: max-content;
+    padding: 10px;
+    margin: 100px;
+    border-color: antiquewhite;
+}
+
+#egyes img{
+    width: 100px;
+    height: 100px;
 }
