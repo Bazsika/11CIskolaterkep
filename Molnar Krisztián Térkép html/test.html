@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bejelentkezés</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .container {
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Bejelentkezés</h2>
+        <form id="loginForm">
+            <label for="username">Felhasználó név:</label><br>
+            <input type="text" id="username" name="username" required><br>
+            
+            <label for="password">Jelszó:</label><br>
+            <input type="password" id="password" name="password" required><br>
+            
+            <input type="submit" value="Bejelentkezés">
+        </form>
+
+        <div id="message" class="message" style="display:none;"></div>
+    </div>
+
+    <script>
+        // Felhasználói adatok (admin és felhasználó)
+        const users = {
+            admin: { username: "admin", password: "admin123", role: "admin" },
+            user: { username: "user", password: "user123", role: "user" }
+        };
+
+        // Bejelentkezési form kezelése
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            let message = document.getElementById('message');
+            
+            // Ellenőrzés, hogy a felhasználó létezik-e
+            if (users.admin.username === username && users.admin.password === password) {
+                message.style.display = 'block';
+                message.classList.remove('error');
+                message.classList.add('success');
+                message.textContent = 'Bejelentkezés sikeres! Üdvözlünk adminisztrátorként.';
+            } else if (users.user.username === username && users.user.password === password) {
+                message.style.display = 'block';
+                message.classList.remove('error');
+                message.classList.add('success');
+                message.textContent = 'Bejelentkezés sikeres! Üdvözlünk felhasználóként.';
+            } else {
+                message.style.display = 'block';
+                message.classList.remove('success');
+                message.classList.add('error');
+                message.textContent = 'Hibás felhasználó név vagy jelszó!';
+            }
+        });
+    </script>
+
+</body>
+</html>

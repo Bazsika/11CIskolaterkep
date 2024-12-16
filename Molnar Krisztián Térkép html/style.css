@@ -2,8 +2,10 @@ body {
     background-image: url('kep/Kép\ \(2\).png');
     background-repeat: no-repeat;
     background-size: 80%;
-    width: 80%;
+    background-position-x: 180px;
     padding: 50px;
+    width: 80%;
+    margin-left: 180px;
 }
 
 #egyes{
@@ -12,6 +14,7 @@ body {
     width: max-content;
     padding: 10px;
     margin: 100px;
+    margin-left: 180px;
     border-color: antiquewhite;
 }
 
