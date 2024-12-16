@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bejelentkezés</title>
+    <title>Bejelentkezés és Regisztráció</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,11 +50,21 @@
             background-color: #d4edda;
             color: #155724;
         }
+        .form-toggle {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .form-toggle a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <!-- Bejelentkezési form -->
+    <div class="container" id="login-container">
         <h2>Bejelentkezés</h2>
         <form id="loginForm">
             <label for="username">Felhasználó név:</label><br>
@@ -67,14 +77,48 @@
         </form>
 
         <div id="message" class="message" style="display:none;"></div>
+
+        <div class="form-toggle">
+            <p>Nem rendelkezel fiókkal? <a href="javascript:void(0);" onclick="toggleForms()">Regisztrálj itt</a></p>
+        </div>
+    </div>
+
+    <!-- Regisztrációs form -->
+    <div class="container" id="register-container" style="display:none;">
+        <h2>Regisztráció</h2>
+        <form id="registerForm">
+            <label for="newUsername">Felhasználó név:</label><br>
+            <input type="text" id="newUsername" name="newUsername" required><br>
+            
+            <label for="newPassword">Jelszó:</label><br>
+            <input type="password" id="newPassword" name="newPassword" required><br>
+            
+            <label for="confirmPassword">Jelszó megerősítése:</label><br>
+            <input type="password" id="confirmPassword" name="confirmPassword" required><br>
+            
+            <input type="submit" value="Regisztrálás">
+        </form>
+
+        <div id="registerMessage" class="message" style="display:none;"></div>
+
+        <div class="form-toggle">
+            <p>Már van fiókod? <a href="javascript:void(0);" onclick="toggleForms()">Bejelentkezés itt</a></p>
+        </div>
     </div>
 
     <script>
-        // Felhasználói adatok (admin és felhasználó)
-        const users = {
-            admin: { username: "admin", password: "admin123", role: "admin" },
-            user: { username: "user", password: "user123", role: "user" }
-        };
+        // Regisztrált felhasználók tárolása a localStorage-ban
+        function loadUsersFromLocalStorage() {
+            const storedUsers = localStorage.getItem('users');
+            return storedUsers ? JSON.parse(storedUsers) : {};
+        }
+
+        function saveUsersToLocalStorage(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        // Felhasználók betöltése a localStorage-ból
+        let users = loadUsersFromLocalStorage();
 
         // Bejelentkezési form kezelése
         document.getElementById('loginForm').addEventListener('submit', function(event) {
@@ -86,24 +130,12 @@
             let message = document.getElementById('message');
             
             // Ellenőrzés, hogy a felhasználó létezik-e
-            if (users.admin.username === username && users.admin.password === password) {
+            if (users[username] && users[username].password === password) {
                 message.style.display = 'block';
                 message.classList.remove('error');
                 message.classList.add('success');
-                message.textContent = 'Bejelentkezés sikeres! Üdvözlünk adminisztrátorként.';
-
-                // Bejelentkezés után átirányítás
-                window.location.href = 'index.html'; // Itt adhatod meg az új oldalt
-
-            } else if (users.user.username === username && users.user.password === password) {
-                message.style.display = 'block';
-                message.classList.remove('error');
-                message.classList.add('success');
-                message.textContent = 'Bejelentkezés sikeres! Üdvözlünk felhasználóként.';
-
-                // Bejelentkezés után átirányítás
-                window.location.href = 'index.html'; // Itt adhatod meg az új oldalt
-
+                message.textContent = 'Bejelentkezés sikeres! Üdvözlünk ' + username + '.';
+                window.location.href = 'dashboard.html'; // Bejelentkezés után átirányítás
             } else {
                 message.style.display = 'block';
                 message.classList.remove('success');
@@ -111,8 +143,66 @@
                 message.textContent = 'Hibás felhasználó név vagy jelszó!';
             }
         });
+
+        // Regisztrációs form kezelése
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const newUsername = document.getElementById('newUsername').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            let registerMessage = document.getElementById('registerMessage');
+            
+            // Ellenőrzés, hogy a jelszavak megegyeznek-e
+            if (newPassword !== confirmPassword) {
+                registerMessage.style.display = 'block';
+                registerMessage.classList.remove('success');
+                registerMessage.classList.add('error');
+                registerMessage.textContent = 'A jelszavak nem egyeznek meg!';
+                return;
+            }
+
+            // Ellenőrzés, hogy a felhasználónév már létezik-e
+            if (users[newUsername]) {
+                registerMessage.style.display = 'block';
+                registerMessage.classList.remove('success');
+                registerMessage.classList.add('error');
+                registerMessage.textContent = 'Ez a felhasználónév már létezik!';
+                return;
+            }
+
+            // Felhasználó hozzáadása
+            users[newUsername] = { username: newUsername, password: newPassword, role: 'user' };
+            
+            // Felhasználók mentése a localStorage-ba
+            saveUsersToLocalStorage(users);
+            
+            registerMessage.style.display = 'block';
+            registerMessage.classList.remove('error');
+            registerMessage.classList.add('success');
+            registerMessage.textContent = 'Regisztráció sikeres! Most már bejelentkezhetsz.';
+
+            // Visszaváltás a bejelentkezéshez
+            setTimeout(() => {
+                toggleForms();
+            }, 2000);
+        });
+
+        // Formok váltogatása
+        function toggleForms() {
+            const loginContainer = document.getElementById('login-container');
+            const registerContainer = document.getElementById('register-container');
+            
+            if (loginContainer.style.display === 'none') {
+                loginContainer.style.display = 'block';
+                registerContainer.style.display = 'none';
+            } else {
+                loginContainer.style.display = 'none';
+                registerContainer.style.display = 'block';
+            }
+        }
     </script>
 
 </body>
 </html>
-
